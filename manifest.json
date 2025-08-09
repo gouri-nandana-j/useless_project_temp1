@@ -26,7 +26,10 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["warning.png"],
+      "resources": [
+        "warning.png",
+        "alarm.mp3"
+      ],
       "matches": ["<all_urls>"]
     }
   ]
