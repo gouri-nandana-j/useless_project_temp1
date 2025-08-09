@@ -55,11 +55,11 @@ Once installed, the extension runs automatically. Simply open your browser.
 For Software:
 
 # Screenshots (Add at least 3)
-https://drive.google.com/drive/folders/1r9UYyi6kYmZj47akREVabZFkj9sV4K-D?usp=drive_link
+https://drive.google.com/drive/folders/1r9UYyi6kYmZj47akREVabZFkj9sV4K-D?usp=sharing
 
 ### Project Demo
 # Video
-https://drive.google.com/drive/folders/1r9UYyi6kYmZj47akREVabZFkj9sV4K-D?usp=drive_link
+https://drive.google.com/drive/folders/1r9UYyi6kYmZj47akREVabZFkj9sV4K-D?usp=sharing
 
 ## Team Contributions
 - Gagandeep M: Developed and integrated the "roast form" blocker from an original Python concept, proposed the "System Explosion Countdown" feature, implemented the audio for the virus warning, and co-developed the extension's primary codebase.
