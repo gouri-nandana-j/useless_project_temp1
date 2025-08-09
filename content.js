@@ -67,7 +67,6 @@ if (!window.__uselessTabLockerInjected) {
       </form>
       <div id="useless-result" style="margin-top:2rem;white-space:pre-line;max-width:90vw;"></div>`;
 
-    // **FIXED**: Search inside the overlay, not the whole document
     overlay.querySelector('#useless-form').onsubmit = function(e) {
       e.preventDefault();
       const form = e.target;
@@ -94,7 +93,6 @@ if (!window.__uselessTabLockerInjected) {
       result += `Your college life is '${college_life}', but soon it'll just be a memory, probably not a good one.\n`;
       result += `\nIn summary: Life is hard, dreams are distant, and nothing really matters. Have a nice day!\n`;
       
-      // **FIXED**: Search inside the overlay
       overlay.querySelector('#useless-form').style.display = 'none';
 
       const minAccepts = 20, maxAccepts = 30;
@@ -142,11 +140,10 @@ if (!window.__uselessTabLockerInjected) {
     `;
   }
 
-  // --- Blocker 3: Fake Virus Scanner (with sound) ---
+  // --- Blocker 3: Fake Virus Scanner ---
   function createVirusBlocker(overlay) {
     const alarmSound = new Audio(chrome.runtime.getURL('alarm.mp3'));
     alarmSound.loop = true;
-    alarmSound.play();
 
     const virusCount = Math.floor(Math.random() * 40) + 5;
     const imageUrl = chrome.runtime.getURL('warning.png');
@@ -159,18 +156,31 @@ if (!window.__uselessTabLockerInjected) {
         <h1 style="color: #ff4d4d; margin-top: 1rem;">System Alert!</h1>
         <p style="color: #fff;">Your system is infested with <strong style="font-size: 1.5rem;">${virusCount} viruses!</strong></p>
         <p style="color: #fff;">Immediate action is required to prevent data loss.</p>
-        <button id="virus-remover-btn" style="margin-top:1.5rem;font-size:1.2rem;padding:0.8rem 1.5rem;border-radius:6px;background:#ff4d4d;color:#fff;border:none;cursor:pointer;">Remove all viruses now</button>
+        <button id="virus-remover-btn" style="margin-top:1.5rem;font-size:1.2rem;padding:0.8rem 1.5rem;border-radius:6px;background:#ff4d4d;color:#fff;border:none;cursor:pointer;transition: background-color 0.2s;">Remove all viruses now</button>
       </div>
     `;
 
-    // **FIXED**: Search inside the overlay for the button
-    overlay.querySelector('#virus-remover-btn').onclick = function() {
-        alarmSound.pause();
+    const removerBtn = overlay.querySelector('#virus-remover-btn');
+    let clickCount = 0;
+
+    removerBtn.onclick = function() {
+      clickCount++;
+
+      if (clickCount === 1) {
+        this.textContent = 'Are you sure? Click again to confirm.';
+        this.style.backgroundColor = '#cc0000';
+      } else if (clickCount === 2) {
+        this.disabled = true;
+        alarmSound.play();
         this.textContent = 'Removing viruses...';
+        
+        // MODIFIED: Increased timeout from 1500 to 4000
         setTimeout(() => {
+            alarmSound.pause();
             removeOverlay();
             chrome.runtime.sendMessage({action: 'task_completed'});
-        }, 1500);
+        }, 4000); // Sound now plays for 4 seconds
+      }
     };
   }
   
