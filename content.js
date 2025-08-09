@@ -77,7 +77,7 @@ if (!window.__uselessTabLockerInjected) {
       const minAccepts = 20, maxAccepts = 30;
       const requiredAccepts = Math.floor(Math.random() * (maxAccepts - minAccepts + 1)) + minAccepts;
       let acceptCount = 0;
-      document.getElementById('useless-result').innerHTML = result + `<br><button id="accept-btn" style="margin-top:2rem;font-size:1.1rem;padding:0.7rem 2rem;border-radius:6px;background:#3a3f47;color:#fff;border:none;cursor:pointer;transition:background 0.2s;">Accept (0/${requiredAccepts})</button>`;
+      document.getElementById('useless-result').innerHTML = result + `<br><button id="accept-btn" style="margin-top:2rem;font-size:1.1rem;padding:0.7rem 2rem;border-radius:6px;background:#3a3f47;color:#fff;border:none;cursor:pointer;transition:background 0.2s;">Accept</button>`;
       document.getElementById('accept-btn').onclick = function() {
         acceptCount++;
         if (acceptCount < requiredAccepts) {
