@@ -15,8 +15,7 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup.html",
-    "default_title": "Activate Lockdown"
+    "default_title": "Useless Tab Locker"
   },
   "content_scripts": [
     {
