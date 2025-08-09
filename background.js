@@ -1,20 +1,40 @@
-// This variable will track the lockdown state.
-let lockdownActive = false;
+// This is the full, corrected background script.
+// It is designed to be robust for Chrome's Manifest V3 environment.
 
-// --- Function to activate the lockdown and lock all existing tabs ---
-function enableLockdown() {
-  if (lockdownActive) return; // Don't run if already active
+/**
+ * Activates the lockdown.
+ * This function is now async to work with chrome.storage.
+ */
+async function enableLockdown() {
+  // Check storage to see if lockdown is already active. This is crucial
+  // because the script can restart and lose its variables.
+  const { lockdownActive } = await chrome.storage.session.get('lockdownActive');
+  if (lockdownActive) {
+    // console.log("Lockdown is already active.");
+    return; // Don't run if already active.
+  }
+
   console.log("Useless Lockdown: Activating...");
-  lockdownActive = true;
   
-  chrome.tabs.query({}, (tabs) => {
-    for (const tab of tabs) {
-      // Send the lockdown message to each tab
-      if (tab.id && !tab.url.startsWith('chrome://')) {
-        chrome.tabs.sendMessage(tab.id, {action: 'activate_lockdown'});
-      }
+  // 1. Set the state in chrome.storage.session so it persists.
+  await chrome.storage.session.set({ lockdownActive: true });
+
+  // 2. Query all tabs to lock them.
+  const tabs = await chrome.tabs.query({});
+  for (const tab of tabs) {
+    // We still check for special URLs.
+    if (tab.id && !tab.url.startsWith('chrome://') && !tab.url.startsWith('chrome-extension://')) {
+      // 3. Send the message with an error handler.
+      // The empty callback function with a check for chrome.runtime.lastError
+      // "handles" the error, preventing it from being logged to the console.
+      chrome.tabs.sendMessage(tab.id, { action: 'activate_lockdown' }, () => {
+        if (chrome.runtime.lastError) {
+          // This error is expected for tabs that can't be scripted (e.g., web store).
+          // We can ignore it or log a custom message.
+        }
+      });
     }
-  });
+  }
 }
 
 // --- AUTOMATIC TRIGGERS ---
@@ -30,22 +50,31 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 // 3. Ensure any new tabs opened or navigated to are also locked.
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  // If lockdown is active and the tab has finished loading, lock it.
+// The listener callback is async to allow for 'await'.
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Check the persistent state from storage.
+  const { lockdownActive } = await chrome.storage.session.get('lockdownActive');
+
+  // If lockdown is on and the tab has finished loading, lock it.
   if (lockdownActive && changeInfo.status === 'complete' && tab.url && !tab.url.startsWith('chrome://')) {
-    chrome.tabs.sendMessage(tabId, {action: 'activate_lockdown'});
+    chrome.tabs.sendMessage(tabId, { action: 'activate_lockdown' }, () => {
+      if (chrome.runtime.lastError) { /* Error handled */ }
+    });
   }
 });
 
-// --- Listen for the 'task_completed' message from any tab ---
+// --- LISTEN FOR TASK COMPLETION ---
+
+// Listen for the 'task_completed' message from any content script.
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  // Check if the message is 'task_completed' and that it came from a tab
   if (msg.action === 'task_completed' && sender.tab && sender.tab.id) {
-    
-    // THE FIX: Instead of unlocking all tabs, we only unlock the one that sent the message.
     console.log(`Useless Lockdown: Unlocking single tab with ID: ${sender.tab.id}`);
-    chrome.tabs.sendMessage(sender.tab.id, { action: 'deactivate_lockdown' });
     
-    // We intentionally DO NOT set lockdownActive to false here, because other tabs are still locked.
+    // Unlock only the tab that sent the message.
+    chrome.tabs.sendMessage(sender.tab.id, { action: 'deactivate_lockdown' }, () => {
+      if (chrome.runtime.lastError) { /* Error handled */ }
+    });
   }
+  
+  return true; 
 });

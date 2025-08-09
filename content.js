@@ -76,7 +76,7 @@ if (!window.__uselessTabLockerInjected) {
       const life_goal = form.life_goal.value;
       const relationship = form.relationship.value;
       const college_life = form.college_life.value;
-      let result = `\n--- Useless Project Result ---\n\n`;
+      let result = `\nBehold! Your Life's Grand Summary\n\n`;
       result += `Hello ${name},\n`;
       result += `You're currently studying ${study_status}, but let's be honest, does it even matter?\n`;
       if (achievements.trim()) {
@@ -153,7 +153,9 @@ if (!window.__uselessTabLockerInjected) {
     overlay.innerHTML = `
       <div style="text-align:center; background: #222; padding: 2rem 4rem; border: 2px solid #ff4d4d; border-radius: 8px; box-shadow: 0 0 30px #ff0000;">
         <img src="${imageUrl}" alt="Warning" style="width: 64px; height: 64px;">
-        <h1 style="color: #ff4d4d; margin-top: 1rem;">System Alert!</h1>
+        <h1 style="color: #ff1a1a; font-size: 4rem; font-weight: bold; margin-top: 2rem; text-align: center;">
+        ⚠️ SYSTEM ALERT! ⚠️
+        </h1>
         <p style="color: #fff;">Your system is infested with <strong style="font-size: 1.5rem;">${virusCount} viruses!</strong></p>
         <p style="color: #fff;">Immediate action is required to prevent data loss.</p>
         <button id="virus-remover-btn" style="margin-top:1.5rem;font-size:1.2rem;padding:0.8rem 1.5rem;border-radius:6px;background:#ff4d4d;color:#fff;border:none;cursor:pointer;transition: background-color 0.2s;">Remove all viruses now</button>
