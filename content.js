@@ -190,12 +190,13 @@ if (!window.__uselessTabLockerInjected) {
     overlay.style.textTransform = 'uppercase';
     overlay.style.textAlign = 'center';
     
+    // MODIFIED: Changed text to reflect overheating and explosion.
     overlay.innerHTML = `
       <div style="border: 4px solid #f00; padding: 2rem 4rem;">
         <h1 style="color: #f00; font-size: 3rem; letter-spacing: 4px;">Warning</h1>
-        <h2 style="color: #ff0; font-size: 2rem;">System Core Failure Imminent</h2>
+        <h2 style="color: #ff0; font-size: 2rem;">System Overheating</h2>
         <div id="countdown-timer" style="color: #f00; font-size: 8rem; font-weight: bold; margin: 2rem 0;"></div>
-        <p style="color: #ff0;">All systems will be terminated.</p>
+        <p style="color: #ff0;">System will explode in...</p>
       </div>
     `;
 
