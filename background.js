@@ -17,21 +17,6 @@ function enableLockdown() {
   });
 }
 
-// --- Function to deactivate the lockdown and unlock all tabs ---
-function disableLockdown() {
-  if (!lockdownActive) return;
-  console.log("Useless Lockdown: Deactivating...");
-  lockdownActive = false;
-
-  chrome.tabs.query({}, (tabs) => {
-    for (const tab of tabs) {
-      if (tab.id && !tab.url.startsWith('chrome://')) {
-        chrome.tabs.sendMessage(tab.id, {action: 'deactivate_lockdown'});
-      }
-    }
-  });
-}
-
 // --- AUTOMATIC TRIGGERS ---
 
 // 1. Activate when the extension is first installed or updated.
@@ -54,8 +39,13 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 // --- Listen for the 'task_completed' message from any tab ---
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.action === 'task_completed') {
-    // When one task is completed, unlock everything.
-    disableLockdown();
+  // Check if the message is 'task_completed' and that it came from a tab
+  if (msg.action === 'task_completed' && sender.tab && sender.tab.id) {
+    
+    // THE FIX: Instead of unlocking all tabs, we only unlock the one that sent the message.
+    console.log(`Useless Lockdown: Unlocking single tab with ID: ${sender.tab.id}`);
+    chrome.tabs.sendMessage(sender.tab.id, { action: 'deactivate_lockdown' });
+    
+    // We intentionally DO NOT set lockdownActive to false here, because other tabs are still locked.
   }
 });
