@@ -11,7 +11,7 @@ if (!window.__uselessTabLockerInjected) {
   });
 
   let overlay = null;
-  let countdownInterval = null; // To hold the timer for the explosion blocker
+  let countdownInterval = null;
 
   function showOverlay() {
     if (overlay) return;
@@ -31,7 +31,6 @@ if (!window.__uselessTabLockerInjected) {
     overlay.style.color = '#f5f5f5';
     overlay.style.fontFamily = 'Inter, Arial, sans-serif';
 
-    // Randomly choose which blocker to show (now with 4 options)
     const blockerType = Math.floor(Math.random() * 4);
 
     switch (blockerType) {
@@ -54,7 +53,6 @@ if (!window.__uselessTabLockerInjected) {
 
   // --- Blocker 1: The Original Form ---
   function createFormBlocker(overlay) {
-    // This function remains unchanged
     overlay.style.fontSize = '1.1rem';
     overlay.innerHTML = `
       <form id="useless-form" style="background:#222;box-shadow:0 4px 24px rgba(0,0,0,0.3);border-radius:12px;padding:2rem 2.5rem;display:flex;flex-direction:column;gap:1rem;min-width:300px;max-width:90vw;">
@@ -69,7 +67,8 @@ if (!window.__uselessTabLockerInjected) {
       </form>
       <div id="useless-result" style="margin-top:2rem;white-space:pre-line;max-width:90vw;"></div>`;
 
-    document.getElementById('useless-form').onsubmit = function(e) {
+    // **FIXED**: Search inside the overlay, not the whole document
+    overlay.querySelector('#useless-form').onsubmit = function(e) {
       e.preventDefault();
       const form = e.target;
       const name = form.name.value;
@@ -94,7 +93,9 @@ if (!window.__uselessTabLockerInjected) {
       }
       result += `Your college life is '${college_life}', but soon it'll just be a memory, probably not a good one.\n`;
       result += `\nIn summary: Life is hard, dreams are distant, and nothing really matters. Have a nice day!\n`;
-      document.getElementById('useless-form').style.display = 'none';
+      
+      // **FIXED**: Search inside the overlay
+      overlay.querySelector('#useless-form').style.display = 'none';
 
       const minAccepts = 20, maxAccepts = 30;
       const requiredAccepts = Math.floor(Math.random() * (maxAccepts - minAccepts + 1)) + minAccepts;
@@ -102,9 +103,9 @@ if (!window.__uselessTabLockerInjected) {
       let currentScale = 1.0;
       const growthFactor = 0.05;
       
-      document.getElementById('useless-result').innerHTML = result + `<br><button id="accept-btn" style="margin-top:2rem;font-size:1.1rem;padding:0.7rem 2rem;border-radius:6px;background:#3a3f47;color:#fff;border:none;cursor:pointer;transition: all 0.2s ease;">Accept</button>`;
+      overlay.querySelector('#useless-result').innerHTML = result + `<br><button id="accept-btn" style="margin-top:2rem;font-size:1.1rem;padding:0.7rem 2rem;border-radius:6px;background:#3a3f47;color:#fff;border:none;cursor:pointer;transition: all 0.2s ease;">Accept</button>`;
       
-      const acceptBtn = document.getElementById('accept-btn');
+      const acceptBtn = overlay.querySelector('#accept-btn');
       acceptBtn.onclick = function() {
         acceptCount++;
         if (acceptCount < requiredAccepts) {
@@ -125,7 +126,6 @@ if (!window.__uselessTabLockerInjected) {
 
   // --- Blocker 2: Infinite Update Screen ---
   function createUpdateBlocker(overlay) {
-    // This function remains unchanged
     overlay.style.background = '#0078d7';
     overlay.style.fontSize = '2rem';
     overlay.innerHTML = `
@@ -144,9 +144,8 @@ if (!window.__uselessTabLockerInjected) {
 
   // --- Blocker 3: Fake Virus Scanner (with sound) ---
   function createVirusBlocker(overlay) {
-    // Play the alarm sound
     const alarmSound = new Audio(chrome.runtime.getURL('alarm.mp3'));
-    alarmSound.loop = true; // Make the sound loop
+    alarmSound.loop = true;
     alarmSound.play();
 
     const virusCount = Math.floor(Math.random() * 40) + 5;
@@ -164,8 +163,9 @@ if (!window.__uselessTabLockerInjected) {
       </div>
     `;
 
-    document.getElementById('virus-remover-btn').onclick = function() {
-        alarmSound.pause(); // Stop the sound
+    // **FIXED**: Search inside the overlay for the button
+    overlay.querySelector('#virus-remover-btn').onclick = function() {
+        alarmSound.pause();
         this.textContent = 'Removing viruses...';
         setTimeout(() => {
             removeOverlay();
@@ -174,47 +174,40 @@ if (!window.__uselessTabLockerInjected) {
     };
   }
   
-  // --- Blocker 4: System Explosion Countdown (NEW) ---
+  // --- Blocker 4: System Explosion Countdown ---
   function createExplosionBlocker(overlay) {
     overlay.style.background = '#000';
     overlay.style.textTransform = 'uppercase';
     overlay.style.textAlign = 'center';
+    
     overlay.innerHTML = `
       <div style="border: 4px solid #f00; padding: 2rem 4rem;">
         <h1 style="color: #f00; font-size: 3rem; letter-spacing: 4px;">Warning</h1>
-        <h2 style="color: #ff0; font-size: 2rem;">System Meltdown Imminent</h2>
+        <h2 style="color: #ff0; font-size: 2rem;">System Core Failure Imminent</h2>
         <div id="countdown-timer" style="color: #f00; font-size: 8rem; font-weight: bold; margin: 2rem 0;"></div>
-        <p style="color: #ff0;">Core temperature critical. Evacuate immediately.</p>
+        <p style="color: #ff0;">All systems will be terminated.</p>
       </div>
     `;
 
     const timerElement = overlay.querySelector('#countdown-timer');
+    let timeLeft = Math.floor(Math.random() * 10) + 5;
     
-    function startCountdown() {
-      // Clear any previous interval to prevent multiple timers running
-      clearInterval(countdownInterval);
-
-      let timeLeft = Math.floor(Math.random() * 15) + 10; // Reset to a new random time
-      
-      countdownInterval = setInterval(() => {
-        if (timeLeft <= 0) {
-          // Timer reached zero, so we reset it to a new random time
-          startCountdown();
-        } else {
-          timerElement.textContent = timeLeft;
-          timeLeft--;
-        }
-      }, 1000);
-    }
-    
-    startCountdown(); // Start the timer for the first time
+    countdownInterval = setInterval(() => {
+      if (timeLeft <= 0) {
+        clearInterval(countdownInterval);
+        overlay.innerHTML = '';
+        overlay.style.background = '#000';
+      } else {
+        timerElement.textContent = timeLeft;
+        timeLeft--;
+      }
+    }, 1000);
   }
-
 
   // --- Utility to remove any overlay ---
   function removeOverlay() {
     if (overlay) {
-      clearInterval(countdownInterval); // IMPORTANT: Stops the explosion timer if it's running
+      clearInterval(countdownInterval);
       overlay.remove();
       overlay = null;
     }
