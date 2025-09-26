@@ -122,7 +122,7 @@ if (!window.__uselessTabLockerInjected) {
     };
   }
 
-  // --- Blocker 2: Infinite Update Screen ---
+  //Blocker 2: Infinite Update Screen
   function createUpdateBlocker(overlay) {
     overlay.style.background = '#0078d7';
     overlay.style.fontSize = '2rem';
@@ -140,7 +140,7 @@ if (!window.__uselessTabLockerInjected) {
     `;
   }
 
-  // --- Blocker 3: Fake Virus Scanner ---
+  //Blocker 3: Fake Virus Scanner
   function createVirusBlocker(overlay) {
     const alarmSound = new Audio(chrome.runtime.getURL('alarm.mp3'));
     alarmSound.loop = true;
@@ -186,7 +186,7 @@ if (!window.__uselessTabLockerInjected) {
     };
   }
   
-  // --- Blocker 4: System Explosion Countdown ---
+  //Blocker 4: System Explosion Countdown
   function createExplosionBlocker(overlay) {
     overlay.style.background = '#000';
     overlay.style.textTransform = 'uppercase';
@@ -217,7 +217,7 @@ if (!window.__uselessTabLockerInjected) {
     }, 1000);
   }
 
-  // --- Utility to remove any overlay ---
+  // Utility to remove any overlay
   function removeOverlay() {
     if (overlay) {
       clearInterval(countdownInterval);

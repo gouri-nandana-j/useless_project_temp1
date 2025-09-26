@@ -26,29 +26,25 @@ We solve this by forcibly injecting chaos and mandatory pointlessness into the B
 
 ### Implementation
 
-For Software:
+## For Software:
 
-Languages: JavaScript, HTML, CSS
+### Languages: JavaScript, HTML, CSS
 
-Frameworks: None. Built-in javascript
+### Frameworks: None. Built-in javascript
 
-Tools: Google Chrome API, Visual Studio Code
+### Tools: Google Chrome API, Visual Studio Code
 
-For Hardware:
+## For Hardware:
 Not applicable. This project requires only a computer.
 
-Implementation
-For Software:
+## Installation
 
-Installation
-This extension is too powerful for the Chrome Web Store. To install it manually:
-Download this repository as a .zip file and unzip it.
-Open Google Chrome and navigate to the extensions page: chrome://extensions.
-Enable "Developer mode" in the top-right corner.
-Click "Load unpacked" and select the unzipped folder.
-
-Run
-Once installed, the extension runs automatically. Simply open your browser.
+1.  Go to the [**Releases page**](https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/releases) of this repository.
+2.  Download the latest `.zip` file (e.g., `useless-tab-locker-v1.0.zip`).
+3.  **Do not unzip the file.**
+4.  Open your Chrome browser and navigate to the extensions page by typing `chrome://extensions` in the address bar.
+5.  Enable **"Developer mode"** using the toggle switch in the top-right corner.
+6.  **Drag and drop** the downloaded `.zip` file anywhere onto the extensions page. The extension will install itself.
 
 
 ### Project Documentation

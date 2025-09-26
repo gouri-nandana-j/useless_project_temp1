@@ -30,7 +30,7 @@ async function enableLockdown() {
   }
 }
 
-// --- AUTOMATIC TRIGGERS ---
+//AUTOMATIC TRIGGERS
 
 // 1. Activate when the extension is first installed or updated.
 chrome.runtime.onInstalled.addListener(() => {
@@ -56,7 +56,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 });
 
-// --- LISTEN FOR TASK COMPLETION ---
+//LISTEN FOR TASK COMPLETION
 
 // Listen for the 'task_completed' message from any content script.
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
