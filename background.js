@@ -1,10 +1,3 @@
-// This is the full, corrected background script.
-// It is designed to be robust for Chrome's Manifest V3 environment.
-
-/**
- * Activates the lockdown.
- * This function is now async to work with chrome.storage.
- */
 async function enableLockdown() {
   // Check storage to see if lockdown is already active. This is crucial
   // because the script can restart and lose its variables.

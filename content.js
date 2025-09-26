@@ -51,6 +51,7 @@ if (!window.__uselessTabLockerInjected) {
     document.body.appendChild(overlay);
   }
 
+  // --- Blocker 1: The Original Form ---
   function createFormBlocker(overlay) {
     overlay.style.fontSize = '1.1rem';
     overlay.innerHTML = `
@@ -121,6 +122,7 @@ if (!window.__uselessTabLockerInjected) {
     };
   }
 
+  // --- Blocker 2: Infinite Update Screen ---
   function createUpdateBlocker(overlay) {
     overlay.style.background = '#0078d7';
     overlay.style.fontSize = '2rem';
@@ -136,16 +138,9 @@ if (!window.__uselessTabLockerInjected) {
         <p>Don't turn off your PC. This will take a while.</p>
       </div>
     `;
-
-    setTimeout(() => {
-        overlay.innerHTML += `<p style="font-size: 1rem; margin-top: 2rem; cursor: pointer;" id="finish-update">Update failed. Click to continue.</p>`;
-        overlay.querySelector('#finish-update').onclick = () => {
-            chrome.runtime.sendMessage({action: 'task_completed'});
-            removeOverlay();
-        };
-    }, 5000);
   }
 
+  // --- Blocker 3: Fake Virus Scanner ---
   function createVirusBlocker(overlay) {
     const alarmSound = new Audio(chrome.runtime.getURL('alarm.mp3'));
     alarmSound.loop = true;
@@ -172,6 +167,7 @@ if (!window.__uselessTabLockerInjected) {
 
     removerBtn.onclick = function() {
       clickCount++;
+
       if (clickCount === 1) {
         this.textContent = 'Are you sure? Click again to confirm.';
         this.style.backgroundColor = '#cc0000';
@@ -180,20 +176,23 @@ if (!window.__uselessTabLockerInjected) {
         alarmSound.play();
         this.textContent = 'Removing viruses...';
         
+        // MODIFIED: Increased timeout from 1500 to 4000
         setTimeout(() => {
             alarmSound.pause();
             removeOverlay();
             chrome.runtime.sendMessage({action: 'task_completed'});
-        }, 4000);
+        }, 4000); // Sound now plays for 4 seconds
       }
     };
   }
   
+  // --- Blocker 4: System Explosion Countdown ---
   function createExplosionBlocker(overlay) {
     overlay.style.background = '#000';
     overlay.style.textTransform = 'uppercase';
     overlay.style.textAlign = 'center';
     
+    // MODIFIED: Changed text to reflect overheating and explosion.
     overlay.innerHTML = `
       <div style="border: 4px solid #f00; padding: 2rem 4rem;">
         <h1 style="color: #f00; font-size: 3rem; letter-spacing: 4px;">Warning</h1>
@@ -209,17 +208,8 @@ if (!window.__uselessTabLockerInjected) {
     countdownInterval = setInterval(() => {
       if (timeLeft <= 0) {
         clearInterval(countdownInterval);
-        overlay.innerHTML = `
-            <div style="text-align: center;">
-                <h1 style="color: #0f0; font-size: 5rem;">*FZZT*</h1>
-                <p style="color: #fff; font-size: 1.5rem;">Defused. You got lucky.</p>
-                <button id="survive-btn" style="margin-top:2rem;font-size:1.2rem;padding:0.8rem 1.5rem;background:#0f0;color:#000;border:none;cursor:pointer;">Continue</button>
-            </div>
-        `;
-        overlay.querySelector('#survive-btn').onclick = () => {
-            chrome.runtime.sendMessage({action: 'task_completed'});
-            removeOverlay();
-        };
+        overlay.innerHTML = '';
+        overlay.style.background = '#000';
       } else {
         timerElement.textContent = timeLeft;
         timeLeft--;
@@ -227,6 +217,7 @@ if (!window.__uselessTabLockerInjected) {
     }, 1000);
   }
 
+  // --- Utility to remove any overlay ---
   function removeOverlay() {
     if (overlay) {
       clearInterval(countdownInterval);
