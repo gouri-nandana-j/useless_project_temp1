@@ -51,7 +51,6 @@ if (!window.__uselessTabLockerInjected) {
     document.body.appendChild(overlay);
   }
 
-  // --- Blocker 1: The Original Form ---
   function createFormBlocker(overlay) {
     overlay.style.fontSize = '1.1rem';
     overlay.innerHTML = `
@@ -70,27 +69,21 @@ if (!window.__uselessTabLockerInjected) {
     overlay.querySelector('#useless-form').onsubmit = function(e) {
       e.preventDefault();
       const form = e.target;
-      const name = form.name.value;
-      const study_status = form.study_status.value;
-      const achievements = form.achievements.value;
-      const life_goal = form.life_goal.value;
-      const relationship = form.relationship.value;
-      const college_life = form.college_life.value;
       let result = `\nBehold! Your Life's Grand Summary\n\n`;
-      result += `Hello ${name},\n`;
-      result += `You're currently studying ${study_status}, but let's be honest, does it even matter?\n`;
-      if (achievements.trim()) {
-        result += `You say your achievements are: ${achievements}. But in the grand scheme, do they really count?\n`;
+      result += `Hello ${form.name.value},\n`;
+      result += `You're currently studying ${form.study_status.value}, but let's be honest, does it even matter?\n`;
+      if (form.achievements.value.trim()) {
+        result += `You say your achievements are: ${form.achievements.value}. But in the grand scheme, do they really count?\n`;
       } else {
         result += `No achievements? Well, that's not surprising.\n`;
       }
-      result += `You hope to achieve '${life_goal}', but the world is a tough place and dreams often remain just that—dreams.\n`;
-      if (relationship.toLowerCase() === "yes") {
+      result += `You hope to achieve '${form.life_goal.value}', but the world is a tough place and dreams often remain just that—dreams.\n`;
+      if (form.relationship.value.toLowerCase() === "yes") {
         result += `At least you have a relationship, but happiness is fleeting, isn't it?\n`;
       } else {
         result += `No relationship? Loneliness is a faithful companion.\n`;
       }
-      result += `Your college life is '${college_life}', but soon it'll just be a memory, probably not a good one.\n`;
+      result += `Your college life is '${form.college_life.value}', but soon it'll just be a memory, probably not a good one.\n`;
       result += `\nIn summary: Life is hard, dreams are distant, and nothing really matters. Have a nice day!\n`;
       
       overlay.querySelector('#useless-form').style.display = 'none';
@@ -109,10 +102,10 @@ if (!window.__uselessTabLockerInjected) {
         if (acceptCount < requiredAccepts) {
           currentScale += growthFactor;
           this.style.transform = `scale(${currentScale})`;
-          this.textContent = `Accept`;
         } else {
           this.style.transform = `scale(1)`;
           this.textContent = 'Unlocking...';
+          this.disabled = true;
           setTimeout(() => {
             removeOverlay();
             chrome.runtime.sendMessage({action: 'task_completed'});
@@ -122,7 +115,6 @@ if (!window.__uselessTabLockerInjected) {
     };
   }
 
-  //Blocker 2: Infinite Update Screen
   function createUpdateBlocker(overlay) {
     overlay.style.background = '#0078d7';
     overlay.style.fontSize = '2rem';
@@ -136,11 +128,17 @@ if (!window.__uselessTabLockerInjected) {
         <p>Working on updates</p>
         <p style="font-size: 4rem; font-weight: 200; margin: 0;">${Math.floor(Math.random() * 99)}% complete</p>
         <p>Don't turn off your PC. This will take a while.</p>
-      </div>
-    `;
+      </div>`;
+    
+    setTimeout(() => {
+        overlay.innerHTML += `<p style="font-size: 1rem; margin-top: 2rem; cursor: pointer;" id="finish-update">Update failed. Click to continue.</p>`;
+        overlay.querySelector('#finish-update').onclick = () => {
+            chrome.runtime.sendMessage({action: 'task_completed'});
+            removeOverlay();
+        };
+    }, 5000);
   }
 
-  //Blocker 3: Fake Virus Scanner
   function createVirusBlocker(overlay) {
     const alarmSound = new Audio(chrome.runtime.getURL('alarm.mp3'));
     alarmSound.loop = true;
@@ -153,21 +151,17 @@ if (!window.__uselessTabLockerInjected) {
     overlay.innerHTML = `
       <div style="text-align:center; background: #222; padding: 2rem 4rem; border: 2px solid #ff4d4d; border-radius: 8px; box-shadow: 0 0 30px #ff0000;">
         <img src="${imageUrl}" alt="Warning" style="width: 64px; height: 64px;">
-        <h1 style="color: #ff1a1a; font-size: 4rem; font-weight: bold; margin-top: 2rem; text-align: center;">
-        ⚠️ SYSTEM ALERT! ⚠️
-        </h1>
+        <h1 style="color: #ff1a1a; font-size: 3rem; font-weight: bold; margin-top: 1rem; text-align: center;">⚠️ SYSTEM ALERT! ⚠️</h1>
         <p style="color: #fff;">Your system is infested with <strong style="font-size: 1.5rem;">${virusCount} viruses!</strong></p>
         <p style="color: #fff;">Immediate action is required to prevent data loss.</p>
         <button id="virus-remover-btn" style="margin-top:1.5rem;font-size:1.2rem;padding:0.8rem 1.5rem;border-radius:6px;background:#ff4d4d;color:#fff;border:none;cursor:pointer;transition: background-color 0.2s;">Remove all viruses now</button>
-      </div>
-    `;
+      </div>`;
 
     const removerBtn = overlay.querySelector('#virus-remover-btn');
     let clickCount = 0;
 
     removerBtn.onclick = function() {
       clickCount++;
-
       if (clickCount === 1) {
         this.textContent = 'Are you sure? Click again to confirm.';
         this.style.backgroundColor = '#cc0000';
@@ -176,31 +170,27 @@ if (!window.__uselessTabLockerInjected) {
         alarmSound.play();
         this.textContent = 'Removing viruses...';
         
-        // MODIFIED: Increased timeout from 1500 to 4000
         setTimeout(() => {
             alarmSound.pause();
             removeOverlay();
             chrome.runtime.sendMessage({action: 'task_completed'});
-        }, 4000); // Sound now plays for 4 seconds
+        }, 4000);
       }
     };
   }
   
-  //Blocker 4: System Explosion Countdown
   function createExplosionBlocker(overlay) {
     overlay.style.background = '#000';
     overlay.style.textTransform = 'uppercase';
     overlay.style.textAlign = 'center';
     
-    // MODIFIED: Changed text to reflect overheating and explosion.
     overlay.innerHTML = `
       <div style="border: 4px solid #f00; padding: 2rem 4rem;">
         <h1 style="color: #f00; font-size: 3rem; letter-spacing: 4px;">Warning</h1>
         <h2 style="color: #ff0; font-size: 2rem;">System Overheating</h2>
         <div id="countdown-timer" style="color: #f00; font-size: 8rem; font-weight: bold; margin: 2rem 0;"></div>
         <p style="color: #ff0;">System will explode in...</p>
-      </div>
-    `;
+      </div>`;
 
     const timerElement = overlay.querySelector('#countdown-timer');
     let timeLeft = Math.floor(Math.random() * 10) + 5;
@@ -208,8 +198,16 @@ if (!window.__uselessTabLockerInjected) {
     countdownInterval = setInterval(() => {
       if (timeLeft <= 0) {
         clearInterval(countdownInterval);
-        overlay.innerHTML = '';
-        overlay.style.background = '#000';
+        overlay.innerHTML = `
+            <div style="text-align: center;">
+                <h1 style="color: #0f0; font-size: 5rem;">*FZZT*</h1>
+                <p style="color: #fff; font-size: 1.5rem;">Defused. You got lucky.</p>
+                <button id="survive-btn" style="margin-top:2rem;font-size:1.2rem;padding:0.8rem 1.5rem;background:#0f0;color:#000;border:none;cursor:pointer;">Continue</button>
+            </div>`;
+        overlay.querySelector('#survive-btn').onclick = () => {
+            chrome.runtime.sendMessage({action: 'task_completed'});
+            removeOverlay();
+        };
       } else {
         timerElement.textContent = timeLeft;
         timeLeft--;
@@ -217,7 +215,6 @@ if (!window.__uselessTabLockerInjected) {
     }, 1000);
   }
 
-  // Utility to remove any overlay
   function removeOverlay() {
     if (overlay) {
       clearInterval(countdownInterval);
