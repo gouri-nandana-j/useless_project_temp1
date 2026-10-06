@@ -1,7 +1,7 @@
 <img width="3188" height="1202" alt="frame (3)" src="https://github.com/user-attachments/assets/517ad8e9-ad22-457d-9538-a9e62d137cd7" />
 
 
-# Useless Tab Locker 🎯
+# TabWarden 🎯
 
 
 ## Basic Details
@@ -13,13 +13,23 @@
 - Member 2: Gouri Nandana J - Sree Chitra Thirunal College of Engineering, Pappanamcode
 
 ### Project Description
-The Useless Tab Locker is a malevolent Chrome extension that seizes control of all your browser tabs. It forces you to complete a variety of pointless, and alarming tasks before you can regain access to your precious content.
+The TabWarden is a malevolent Chrome extension that seizes control of all your browser tabs. It forces you to complete a variety of pointless, and alarming tasks before you can regain access to your precious content.
 
 ### The Problem (that doesn't exist)
-This project addresses the common behavior of keeping many browser tabs open at once. Our premise is that managing an excessive number of tabs can make it difficult to focus on a single task.
+We all keep far too many tabs open. Twenty tabs, three half-read articles, and one video we forgot was playing. Everyone knows it hurts focus, and nobody does anything about it.
 
 ### The Solution (that nobody asked for)
-We solve this by forcibly injecting chaos and mandatory pointlessness into the Browse experience. Our extension replaces the illusion of productivity with the harsh, hilarious reality of futility. Instead of letting users see the content they wanted, we block it with a maddening challenge, ensuring maximum frustration.
+TabWarden takes your tabs hostage. The moment it's installed, every open tab is covered by a full-screen challenge, and the page underneath stays out of reach until you complete it. Each tab gets a random one:
+
+- **The Roast Form:** answer a few personal questions, receive a brutally honest life summary, then click "Accept" 20 to 30 times while the button grows.
+- **The Endless Update:** a fake system update that eventually admits it has failed.
+- **The Virus Scan:** a fake alert, an alarm, and a very suspicious "Remove" button.
+- **The Countdown:** a system that is definitely about to explode.
+
+Finish one and that tab is released. The rest stay locked until you earn them back.
+
+### Beyond the Joke
+The challenges are ridiculous, but the machinery underneath is a general "lock a tab until a task is done" system: a background service worker keeps the state, content scripts draw the overlay, and messages release one tab at a time. Swap the challenges for something useful and the same design could drive a focus tool, a break reminder, or a simple gate before a distracting site.
 
 ## Technical Details
 ### Technologies/Components Used
